@@ -13,11 +13,12 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
     "dev:next": "next dev",
-    "build:next": "node scripts/setup-neon.mjs && next build",
+    "build:next": "node scripts/setup-neon.mjs && node scripts/verify-styles.mjs --source && next build && node scripts/verify-styles.mjs --build",
     "start:next": "next start",
     "db:neon": "node scripts/setup-neon.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.check.json",
-    "test": "node --import tsx --test tests/*.test.ts"
+    "test": "node --import tsx --test tests/*.test.ts",
+    "check:styles": "node scripts/verify-styles.mjs --source"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
