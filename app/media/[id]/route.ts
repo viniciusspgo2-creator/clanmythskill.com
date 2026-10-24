@@ -1,0 +1,2 @@
+import { env } from '@/lib/platform';
+export async function GET(_req:Request,{params}:{params:Promise<{id:string}>}){const {id}=await params;if(!/^[0-9a-f-]{36}$/.test(id))return new Response('Não encontrado',{status:404});const file=await env.BUCKET?.get(id);if(!file)return new Response('Não encontrado',{status:404});return new Response(file.body,{headers:{'Content-Type':file.httpMetadata?.contentType||'image/webp','Cache-Control':'public,max-age=31536000,immutable','X-Content-Type-Options':'nosniff'}});}
