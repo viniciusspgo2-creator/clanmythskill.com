@@ -28,3 +28,19 @@ test('sessão assinada rejeita adulteração, expiração e troca de senha',asyn
 test('blog inicial tem 10 artigos completos com endereços únicos',()=>{
  assert.equal(articles.length,10);assert.equal(new Set(articles.map(a=>a.slug)).size,10);for(const a of articles){assert.ok(a.published);assert.ok(a.sections.length>=3);assert.ok(a.sections.flatMap(s=>s.paragraphs).join(' ').split(/\s+/).length>=300);}
 });
+
+test('fontes diretas escolhem HLS/MP4 e permitem tipo explícito sem alterar embeds originais',async()=>{
+ const {playbackSources}=await import('../lib/stream-normalize');
+ const original=[{provider:'API',quality:'HD',url:'https://player.example/embed'}];
+ assert.equal(playbackSources(original)[0].provider,'API');
+ assert.equal(playbackSources(original,{sourceUrl:'https://video.example/live.m3u8?signature=abc'})[0].kind,'hls');
+ assert.equal(playbackSources(original,{sourceUrl:'https://video.example/movie.mp4'})[0].kind,'mp4');
+ assert.equal(playbackSources(original,{sourceUrl:'https://video.example/play',sourceType:'hls'})[0].kind,'hls');
+ assert.equal(playbackSources(original,{sourceUrl:'http://unsafe.example/a'}) .length,0);
+});
+test('atualização troca apenas a imagem antiga do 4FUN e preserva personalizações salvas',async()=>{
+ const {defaults,mergeSiteSettings}=await import('../lib/defaults');
+ const old=structuredClone(defaults);old.servers[0].image='/images/dust.webp';old.vipPrice=12;old.heroLine1='CLAN DO PLAYER';
+ const merged=mergeSiteSettings(old);assert.equal(merged.servers[0].image,'/images/4fun-operator.webp');assert.equal(merged.vipPrice,12);assert.equal(merged.heroLine1,'CLAN DO PLAYER');assert.equal(old.servers[0].image,'/images/dust.webp');
+ const custom=structuredClone(old);custom.servers[0].image='/media/custom-picture';assert.equal(mergeSiteSettings(custom).servers[0].image,'/media/custom-picture');
+});
