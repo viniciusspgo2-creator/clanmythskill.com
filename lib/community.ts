@@ -1,6 +1,6 @@
 export const communityLinks = {
   server:'https://iceeedr.com.br/servidor/131.196.198.52:27248',
-  ranking:'https://panel.effexo.net/server/mythskill',
+  ranking:'http://patente.iceeedr.com.br/index.php?ip=131.196.198.52:27248',
   bans:'https://panel.effexo.net/server/mythskill',
   download:'https://iceeedr.com.br/post/download-cs-1-6-no-steam-atualizado',
 };
@@ -35,7 +35,7 @@ export const communityFaq = [
   {question:'Onde encontro meu Steam ID ou Valve ID?',answer:'Entre no servidor e digite status no console. Procure a linha do seu nickname e copie o identificador correspondente. Se não conseguir localizar, peça ajuda à administração.'},
   {question:'Meu computador consegue rodar o CS 1.6?',answer:'O jogo é leve para muitos computadores atuais, mas o sistema, o Steam, os mapas e os programas abertos influenciam o desempenho. Nosso Guia do Player separa os requisitos históricos das orientações práticas para jogar hoje.'},
   {question:'Os comandos do console melhoram a precisão da arma?',answer:'Os comandos da nossa central ajustam aparência da mira, sensibilidade, som e informações de desempenho. Eles não removem recuo nem alteram a precisão real. Teste um ajuste por vez e guarde o valor anterior.'},
-  {question:'Onde vejo as patentes, o ranking e a lista de banimentos?',answer:'Na Central do Player, use Ranking e Patentes ou Lista de Banimentos. Os dois botões abrem o painel oficial externo Effexo do servidor MythSkill, onde você pode consultar as informações publicadas pelo serviço.'},
+  {question:'Onde vejo as patentes, o ranking e a lista de banimentos?',answer:'Na Central do Player, use Ranking e Patentes ou Lista de Banimentos. O botão Ranking e Patentes abre o painel de patentes da iceeedR; o botão Lista de Banimentos abre o painel Effexo. Cada consulta é exibida em seu respectivo site externo.'},
   {question:'Como consigo acesso ao Streaming Mithys?',answer:'O streaming é um benefício para os players que participam e contribuem com a comunidade. Solicite seu código à administração. Na página de streaming, digite o código recebido; a validade e a revogação são controladas pelos administradores.'},
   {question:'Por que aparecem anúncios no streaming?',answer:'As fontes de reprodução pertencem a terceiros e podem exibir anúncios ou abrir outras abas. Aguarde o anúncio, feche a propaganda e volte ao player. Se uma fonte não iniciar, escolha outra opção disponível.'},
   {question:'Por que um filme ou série pode aparecer sem botão de assistir?',answer:'Capas e informações do catálogo não significam que existe uma transmissão disponível. O botão de assistir aparece quando a administração cadastra uma fonte de reprodução para aquele título. Quando houver apenas informações, você pode consultar onde assistir.'},

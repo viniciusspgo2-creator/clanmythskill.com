@@ -49,12 +49,12 @@ export function RulesButton({whatsapp,className='button ghost'}:{whatsapp:string
 export function CommunityResources({settings:s}:{settings:Settings}){
   return <section className="section player-hub" id="central-do-player"><div className="container">
     <div className="section-heading"><div><span className="section-kicker"><Crosshair size={19}/> CENTRAL DO PLAYER</span><h2>TUDO PRONTO.<br/><em>AGORA É JOGAR.</em></h2></div><p>Prepare sua configuração, acompanhe a comunidade e conheça as regras antes de entrar no round.</p></div>
-    <div className="official-panels-intro"><span className="section-kicker">CONSULTA EXTERNA · PAINEL EFFEXO</span><p>Escolha o que deseja consultar. Os dois acessos abrem o painel oficial da MythSkill em uma nova aba.</p></div>
+    <div className="official-panels-intro"><span className="section-kicker">CONSULTAS EXTERNAS · MYTHSKILL</span><p>Acompanhe as patentes na iceeedR ou consulte os banimentos no Effexo. Cada botão abre seu respectivo painel em uma nova aba.</p></div>
     <div className="official-panels-grid">
-      <a href={communityLinks.ranking} className="official-panel-card official-panel-card--ranking" target="_blank" rel="noopener noreferrer" aria-label="Abrir ranking e patentes no painel externo Effexo">
+      <a href={communityLinks.ranking} className="official-panel-card official-panel-card--ranking" target="_blank" rel="noopener noreferrer" aria-label="Abrir ranking e patentes no painel externo iceeedR">
         <div className="official-panel-top"><span className="official-panel-symbol"><Trophy size={29}/></span><span className="official-panel-kicker">COMPETIÇÃO / JOGADORES <ArrowUpRight size={19}/></span></div>
         <h3>RANKING <em>&amp; PATENTES</em></h3>
-        <p>Confira o ranking dos jogadores e as patentes exibidas no painel do servidor.</p>
+        <p>Confira o ranking dos jogadores e suas patentes no painel da iceeedR.</p>
         <span className="official-panel-action">CONSULTAR RANKING <ArrowUpRight size={20}/></span>
       </a>
       <a href={communityLinks.bans} className="official-panel-card official-panel-card--bans" target="_blank" rel="noopener noreferrer" aria-label="Abrir lista de banimentos no painel externo Effexo">
