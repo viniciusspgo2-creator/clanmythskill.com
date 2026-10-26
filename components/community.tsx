@@ -49,10 +49,24 @@ export function RulesButton({whatsapp,className='button ghost'}:{whatsapp:string
 export function CommunityResources({settings:s}:{settings:Settings}){
   return <section className="section player-hub" id="central-do-player"><div className="container">
     <div className="section-heading"><div><span className="section-kicker"><Crosshair size={19}/> CENTRAL DO PLAYER</span><h2>TUDO PRONTO.<br/><em>AGORA É JOGAR.</em></h2></div><p>Prepare sua configuração, acompanhe a comunidade e conheça as regras antes de entrar no round.</p></div>
-    <div className="player-hub-grid">
+    <div className="official-panels-intro"><span className="section-kicker">CONSULTA EXTERNA · PAINEL EFFEXO</span><p>Escolha o que deseja consultar. Os dois acessos abrem o painel oficial da MythSkill em uma nova aba.</p></div>
+    <div className="official-panels-grid">
+      <a href={communityLinks.ranking} className="official-panel-card official-panel-card--ranking" target="_blank" rel="noopener noreferrer" aria-label="Abrir ranking e patentes no painel externo Effexo">
+        <div className="official-panel-top"><span className="official-panel-symbol"><Trophy size={29}/></span><span className="official-panel-kicker">COMPETIÇÃO / JOGADORES <ArrowUpRight size={19}/></span></div>
+        <h3>RANKING <em>&amp; PATENTES</em></h3>
+        <p>Confira o ranking dos jogadores e as patentes exibidas no painel do servidor.</p>
+        <span className="official-panel-action">CONSULTAR RANKING <ArrowUpRight size={20}/></span>
+      </a>
+      <a href={communityLinks.bans} className="official-panel-card official-panel-card--bans" target="_blank" rel="noopener noreferrer" aria-label="Abrir lista de banimentos no painel externo Effexo">
+        <div className="official-panel-top"><span className="official-panel-symbol"><ShieldCheck size={29}/></span><span className="official-panel-kicker">MODERAÇÃO / PUNIÇÕES <ArrowUpRight size={19}/></span></div>
+        <h3>LISTA DE <em>BANIMENTOS</em></h3>
+        <p>Consulte os banimentos e registros de moderação disponibilizados pelo painel.</p>
+        <span className="official-panel-action">CONSULTAR BANIMENTOS <ArrowUpRight size={20}/></span>
+      </a>
+    </div>
+    <div className="player-hub-grid player-hub-grid--secondary">
       <Link href="/guia" className="hub-card"><BookOpen size={31}/><span>REQUISITOS + CONSOLE</span><h3>Seu jogo, bem ajustado.</h3><p>Veja o que seu computador precisa e copie comandos para mira, áudio e desempenho.</p><b>ABRIR GUIA DO PLAYER <ArrowUpRight size={19}/></b></Link>
-      <a href={communityLinks.status} className="hub-card" target="_blank" rel="noreferrer"><Trophy size={31}/><span>RANKING + MODERAÇÃO</span><h3>Quem faz parte do placar.</h3><p>Acesse o top de jogadores e a lista de banidos no painel externo do servidor.</p><b>RANKING E BANIDOS <ArrowUpRight size={19}/></b></a>
-      <a href={communityLinks.download} className="hub-card" target="_blank" rel="noreferrer"><Download size={31}/><span>DOWNLOAD EXTERNO</span><h3>Precisa instalar o 1.6?</h3><p>Abra a página de download CS 1.6 No-Steam da iceeedR, indicada pelo clan.</p><b>VER PÁGINA DE DOWNLOAD <ArrowUpRight size={19}/></b></a>
+      <a href={communityLinks.download} className="hub-card" target="_blank" rel="noopener noreferrer"><Download size={31}/><span>DOWNLOAD EXTERNO</span><h3>Precisa instalar o 1.6?</h3><p>Abra a página de download CS 1.6 No-Steam da iceeedR, indicada pelo clan.</p><b>VER PÁGINA DE DOWNLOAD <ArrowUpRight size={19}/></b></a>
     </div>
     <div className="hub-bottom"><RulesButton whatsapp={s.whatsapp}/><a className="text-link" href={communityLinks.server} target="_blank" rel="noreferrer"><Radio size={18}/> MYTHSKILL NA ICEEEDR <ArrowUpRight size={18}/></a></div>
   </div></section>;
