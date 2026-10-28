@@ -1,0 +1,52 @@
+{
+  "measuredAt": "2026-10-28T04:58:22.735Z",
+  "url": "http://127.0.0.1:3004/",
+  "lighthouseVersion": "13.6.0",
+  "mode": "laboratório mobile / produção local",
+  "scores": {
+    "performance": 99,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100
+  },
+  "metrics": {
+    "largest-contentful-paint": {
+      "value": 1365.8204,
+      "display": "1.4 s"
+    },
+    "cumulative-layout-shift": {
+      "value": 0.0018674429906085847,
+      "display": "0.002"
+    },
+    "total-blocking-time": {
+      "value": 104.5,
+      "display": "100 ms"
+    },
+    "first-contentful-paint": {
+      "value": 1365.8204,
+      "display": "1.4 s"
+    },
+    "speed-index": {
+      "value": 1367.6406002777555,
+      "display": "1.4 s"
+    }
+  },
+  "inp": null,
+  "inpNote": "INP de campo não medido; exige interações reais e coleta de produção.",
+  "screen": {
+    "mobile": true,
+    "width": 412,
+    "height": 823,
+    "deviceScaleFactor": 1.75,
+    "disabled": false
+  },
+  "throttling": {
+    "rttMs": 150,
+    "throughputKbps": 1638.4,
+    "requestLatencyMs": 562.5,
+    "downloadThroughputKbps": 1474.5600000000002,
+    "uploadThroughputKbps": 675,
+    "cpuSlowdownMultiplier": 4
+  },
+  "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36"
+}

@@ -8,3 +8,5 @@ CREATE TABLE IF NOT EXISTS stream_access_codes (id TEXT PRIMARY KEY,code_hash TE
 CREATE TABLE IF NOT EXISTS stream_access_sessions (id TEXT PRIMARY KEY,code_id TEXT NOT NULL,token_hash TEXT NOT NULL UNIQUE,created_at TEXT NOT NULL,expires_at TEXT NOT NULL);
 CREATE INDEX IF NOT EXISTS stream_access_sessions_code_idx ON stream_access_sessions(code_id);
 CREATE TABLE IF NOT EXISTS stream_access_attempts (key TEXT PRIMARY KEY,window_start BIGINT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0);
+
+CREATE INDEX IF NOT EXISTS stream_access_attempts_window_idx ON stream_access_attempts(window_start);

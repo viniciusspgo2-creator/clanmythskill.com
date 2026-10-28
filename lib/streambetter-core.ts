@@ -1,3 +1,4 @@
+import { object, array } from './remote-json';
 import type {Embed,StreamItem,StreamOverride} from './stream-types';
 import {playbackSources,safeHttps} from './stream-normalize';
 export const STREAMBETTER='https://streambetter.lol';
@@ -17,12 +18,13 @@ export function parseProviderIds(data:unknown):ProviderIds{
  return result;
 }
 export function normalizeProviderTitles(data:unknown,kind:'movie'|'tv'):StreamItem[]{
- if(!data||typeof data!=='object'||(data as any).success!==true||!Array.isArray((data as any).titles))throw new Error('Resposta de títulos inválida.');
- return (data as any).titles.slice(0,100).filter((t:any)=>positive(t.tmdb_id)&&t.type===kind&&typeof t.title==='string'&&t.title.trim()).map((t:any)=>{
+ const d=object(data);if(d.success!==true||!Array.isArray(d.titles))throw new Error('Resposta de títulos inválida.');
+ return array(d.titles).slice(0,100).map(object).filter(t=>positive(t.tmdb_id)&&t.type===kind&&typeof t.title==='string'&&t.title.trim()).map(t=>{
   const poster=typeof t.poster_path==='string'?t.poster_path:'';const image=poster.startsWith('/')?safeHttps('https://image.tmdb.org/t/p/w500'+poster):safeHttps(poster);
-  return {id:`${kind}:${Number(t.tmdb_id)}`,tmdbId:Number(t.tmdb_id),kind,title:t.title.slice(0,300),description:typeof t.overview==='string'?t.overview.slice(0,10000):'',category:kind==='movie'?'Filmes':'Séries',image,year:positive(t.release_year)?Number(t.release_year):undefined,embeds:[]};
+  return {id:`${kind}:${Number(t.tmdb_id)}`,tmdbId:Number(t.tmdb_id),kind,title:String(t.title).slice(0,300),description:typeof t.overview==='string'?t.overview.slice(0,10000):'',category:kind==='movie'?'Filmes':'Séries',image,year:positive(t.release_year)?Number(t.release_year):undefined,embeds:[]};
  });
 }
+
 export function providerSources(item:StreamItem,enabled:boolean,ids:{movie:Set<number>;tv:Set<number>},override:StreamOverride={}):Embed[]{
  let sources=item.embeds.filter(e=>e.episodePlayer!=='streambetter'&&e.provider!=='StreamBetter');
  if(enabled&&!override.disableAutomatic&&(item.kind==='movie'||item.kind==='tv')&&item.tmdbId&&ids[item.kind].has(item.tmdbId))sources=[...sources,{provider:'StreamBetter',quality:'Player externo',kind:'embed',url:streambetterUrl(item.kind,item.tmdbId),...(item.kind==='tv'?{episodePlayer:'streambetter' as const}:{})}];

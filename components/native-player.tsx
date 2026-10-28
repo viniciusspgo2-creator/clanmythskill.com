@@ -1,5 +1,5 @@
 'use client';
-import { useCopy } from '@/components/mythskill/copy';
+import {useCopy} from '@/components/mythskill/copy';
 import {useEffect,useRef,useState} from 'react';
 import {AlertCircle} from 'lucide-react';
 import type {Embed} from '@/lib/stream-types';
@@ -21,6 +21,6 @@ export function NativePlayer({source,title}:{source:Embed;title:string}){const t
       }).catch(()=>{if(active)setError(t("ui_nao_foi_possivel_iniciar_o_player_atuali_59b02e","Não foi possível iniciar o player. Atualize a página e tente novamente."));});
     }else{el.src=source.url;play();}
     return()=>{active=false;destroy?.();el.pause();el.removeAttribute('src');el.load();};
-  },[source.url,source.kind]);
+  },[source.url,source.kind,t]);
   return <div className="native-player"><video ref={video} controls playsInline autoPlay aria-label={`Vídeo de ${title}`} onError={()=>setError(t("ui_a_fonte_nao_esta_disponivel_ou_nao_permi_b8d8de","A fonte não está disponível ou não permite reprodução neste site. Tente outra opção."))}/>{error&&<div className="native-player-error" role="alert"><AlertCircle size={24}/><p>{error}</p></div>}</div>;
 }

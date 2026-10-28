@@ -1,0 +1,8 @@
+import type { Metadata } from 'next';
+import type { Article } from './articles';
+import { getContent } from './cms';
+export const siteUrl=()=> (process.env.NEXT_PUBLIC_SITE_URL||'https://www.clanmythskill.com').replace(/\/$/,'');
+export const absolute=(value:string)=>new URL(value||'/',siteUrl()).href;
+export async function pageMetadata(path:string):Promise<Metadata>{const {settings,design}=await getContent();const page=design.pages.find(p=>p.path===path);const seo=design.seo.pages.find(p=>p.path===path);const title=seo?.title||page?.title||settings.seoTitle;const description=seo?.description||page?.description||settings.seoDescription;const image=seo?.ogImage||design.branding.ogImage||'/og-placeholder.jpg';return{title:path==='/'?{absolute:title}:title,description,alternates:{canonical:path},openGraph:{title,description,url:path,locale:'pt_BR',type:'website',images:[{url:image,width:1200,height:630,alt:design.branding.wordmark}]},twitter:{card:'summary_large_image',title,description,images:[image]}};}
+export function JsonLd({data}:{data:unknown}){return <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(data).replace(/</g,'\\u003c')}}/>}
+export function articleJsonLd(article:Article){return{'@context':'https://schema.org','@type':'Article',headline:article.seoTitle||article.title,description:article.seoDescription||article.excerpt,image:absolute(article.image),datePublished:article.date,dateModified:article.date,mainEntityOfPage:absolute('/blog/'+article.slug),author:{'@type':'Organization',name:'Clan MythSkill',url:siteUrl()},publisher:{'@type':'Organization',name:'Clan MythSkill',url:siteUrl()},articleSection:article.category,inLanguage:'pt-BR'};}

@@ -1,0 +1,1 @@
+CREATE INDEX `stream_access_attempts_window_idx` ON `stream_access_attempts` (`window_start`);

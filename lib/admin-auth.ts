@@ -1,9 +1,9 @@
-import { cookies } from 'next/headers';
-import { compare, hash } from 'bcryptjs';
-import { env } from '@/lib/platform';
-import { audit, readRecord, records, writeRecord } from './cms-store';
-import { verifyTotp } from './totp';
-import { type AdminUser, type Principal, type AdminSession } from './auth-types';
+import {cookies} from 'next/headers';
+import {compare,hash} from 'bcryptjs';
+import {env} from '@/lib/platform';
+import {audit,readRecord,writeRecord} from './cms-store';
+import {verifyTotp} from './totp';
+import {type AdminUser,type Principal,type AdminSession} from './auth-types';
 const encoder=new TextEncoder();
 export { sameOrigin } from './request-security';
 function secret(){const value=process.env.ADMIN_SESSION_SECRET||process.env.ADMIN_PASSWORD||'';return value.length>=16?value:null;}
@@ -24,4 +24,4 @@ export async function isAdmin(){return (await getPrincipal())?.role==='admin';}
 export async function hasRole(...roles:Principal['role'][]){const user=await getPrincipal();return user&&roles.includes(user.role)?user:null;}
 export async function revokeSession(id:string){const value=await readRecord<AdminSession|null>('auth:session:'+id,null);if(value)await writeRecord('auth:session:'+id,{...value,revokedAt:new Date().toISOString()});}
 export async function logoutCurrent(){const token=(await cookies()).get('myth_admin')?.value||'';const user=await principalFromToken(token);if(!user)return;try{const payload=JSON.parse(Buffer.from(token.split('.')[0],'base64url').toString()) as {id:string};await revokeSession(payload.id);await audit(user.email,'logout','session','Sessão encerrada pelo usuário.');}catch{/* A cleared cookie also blocks the session. */}}
-export async function getAdminState(){const user=await getPrincipal();const users=await getAdminUsers();return{mode:'next',signedIn:!!user,authorized:!!user,displayName:user?.name||'Administrador MythSkill',role:user?.role||'admin',user,needsSetup:!secret()||(!users.length&&(!process.env.ADMIN_PASSWORD||process.env.ADMIN_PASSWORD.length<16))};}
+export async function getAdminState(){const user=await getPrincipal();const users=await getAdminUsers();return{mode:'next',signedIn:!!user,authorized:!!user,displayName:user?.name||'Administrador MythSkill',role:user?.role||'admin',user,needsSetup:!env.DB||!secret()||(!users.length&&(!process.env.ADMIN_PASSWORD||process.env.ADMIN_PASSWORD.length<16))};}

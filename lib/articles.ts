@@ -1,4 +1,4 @@
-import { newArticles } from './new-articles';
+import {newArticles} from './new-articles';
 export type Article = {
   id: string;
   slug: string;
@@ -249,3 +249,5 @@ export const legacyArticles: Article[] = [
 
 export const articles:Article[]=[...newArticles,...legacyArticles];
 export function isArticlePublic(a:Article){return a.published&&!a.archived&&(!a.scheduledAt||Date.parse(a.scheduledAt)<=Date.now());}
+
+export function articleCards(items:Article[]):Article[]{return items.map(({bodyMarkdown:_markdown,...a})=>{void _markdown;return {...a,sections:[],sources:[]};});}

@@ -1,15 +1,16 @@
 'use client';
+import { useNow } from '@/components/mythskill/use-now';
 import {useEffect,useState} from 'react';
 import {KeyRound,Plus,ShieldCheck,RefreshCw,Check,AlertCircle,LockKeyhole,Copy,Ban,Users} from 'lucide-react';
-import { Button,Field,Modal } from './mythskill/ui';
+import {Button,Field,Modal} from './mythskill/ui';
 import type {AccessCodeRecord} from '@/lib/stream-access-core';
-export function AccessCodeAdmin(){
+export function AccessCodeAdmin(){const now=useNow();
  const[count,setCount]=useState(1),[editing,setEditing]=useState<AccessCodeRecord|null>(null);
  const[codes,setCodes]=useState<AccessCodeRecord[]>([]),[label,setLabel]=useState(''),[days,setDays]=useState('30'),[created,setCreated]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState(''),[copied,setCopied]=useState(false);
- async function load(){try{const response=await fetch('/api/admin/access-codes',{cache:'no-store'});const result=await response.json() as {codes:AccessCodeRecord[];error?:string};if(!response.ok)throw new Error(result.error);setCodes(result.codes);}catch(e){setError((e as Error).message||'Não foi possível carregar os códigos.');}}
+ function load(){return fetch('/api/admin/access-codes',{cache:'no-store'}).then(async response=>{const result=await response.json() as {codes:AccessCodeRecord[];error?:string};if(!response.ok)throw new Error(result.error);setCodes(result.codes);}).catch(e=>setError((e as Error).message||'Não foi possível carregar os códigos.'));}
  useEffect(()=>{load()},[]);
  async function send(body:unknown){setBusy(true);setError('');setNotice('');try{const response=await fetch('/api/admin/access-codes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const result=await response.json() as {code?:string;codes?:{code:string}[];error?:string};if(!response.ok)throw new Error(result.error);if(result.code||result.codes){setCreated(result.code||result.codes!.map(c=>c.code).join('\n'));setCopied(false);setLabel('');setNotice('Código gerado. Copie e envie ao player elegível.');}else setNotice('Código atualizado. A revogação bloqueia também as sessões vinculadas.');await load();}catch(e){setError((e as Error).message||'Não foi possível concluir.');}finally{setBusy(false);}}
- const active=(record:AccessCodeRecord)=>!record.revoked_at&&(!record.expires_at||Date.parse(record.expires_at)>Date.now());
+ const active=(record:AccessCodeRecord)=>!record.revoked_at&&(!record.expires_at||Date.parse(record.expires_at)>now);
  const date=(value:string|null)=>value?new Date(value).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}):'Sem validade';
  return <>{notice&&<div className="admin-notice" role="status"><Check size={20}/>{notice}</div>}{error&&<div className="admin-error" role="alert"><AlertCircle size={21}/>{error}</div>}
  <div className="access-admin-stats"><div><KeyRound size={25}/><span>Códigos ativos<strong>{codes.filter(active).length}</strong></span></div><div><Ban size={25}/><span>Revogados<strong>{codes.filter(c=>c.revoked_at).length}</strong></span></div><div><Users size={25}/><span>Entradas registradas<strong>{codes.reduce((total,c)=>total+Number(c.use_count),0)}</strong></span></div></div>

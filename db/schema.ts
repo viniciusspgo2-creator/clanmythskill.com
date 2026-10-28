@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import {index,integer,sqliteTable,text} from 'drizzle-orm/sqlite-core';
 export const content = sqliteTable('content',{key:text('key').primaryKey(),value:text('value').notNull()});
 export const posts = sqliteTable('posts',{slug:text('slug').primaryKey(),data:text('data').notNull()});
 export const visits = sqliteTable('visits',{id:text('id').primaryKey(),day:text('day').notNull()});
@@ -11,4 +11,4 @@ export const streamAccessSessions=sqliteTable('stream_access_sessions',{
 });
 export const streamAccessAttempts=sqliteTable('stream_access_attempts',{
  key:text('key').primaryKey(),windowStart:integer('window_start').notNull(),attempts:integer('attempts').notNull().default(0),
-});
+},table=>[index('stream_access_attempts_window_idx').on(table.windowStart)]);

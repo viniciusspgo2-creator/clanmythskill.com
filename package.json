@@ -19,7 +19,9 @@
     "typecheck": "tsc --noEmit -p tsconfig.check.json",
     "test": "node --import tsx --test tests/*.test.ts",
     "check:styles": "node scripts/verify-styles.mjs --source",
-    "content:seed": "node --import tsx scripts/seed-content.ts"
+    "content:seed": "node --env-file-if-exists=.env.local --import tsx scripts/seed-content.ts",
+    "test:e2e": "node scripts/test-e2e.mjs",
+    "build:next:webpack": "node scripts/setup-neon.mjs && node scripts/verify-styles.mjs --source && next build --webpack && node scripts/verify-styles.mjs --build"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -27,6 +29,7 @@
     "@neondatabase/serverless": "^1.2.0",
     "@shadcn/react": "^0.3.0",
     "bcryptjs": "3.0.3",
+    "cheerio": "1.2.0",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "cmdk": "^1.1.1",

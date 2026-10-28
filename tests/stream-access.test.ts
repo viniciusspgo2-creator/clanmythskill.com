@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {DatabaseSync} from 'node:sqlite';
+import {DatabaseSync,type SQLInputValue} from 'node:sqlite';
 import {issueAccessCode,redeemAccessCode,verifyAccessSession,revokeAccessCode,normalizeAccessCode,type AccessStore} from '../lib/stream-access-core';
 function store(){
  const sqlite=new DatabaseSync(':memory:');
  sqlite.exec('CREATE TABLE stream_access_codes (id TEXT PRIMARY KEY,code_hash TEXT NOT NULL UNIQUE,label TEXT NOT NULL,suffix TEXT NOT NULL,created_at TEXT NOT NULL,expires_at TEXT,revoked_at TEXT,last_used_at TEXT,use_count INTEGER NOT NULL DEFAULT 0);CREATE TABLE stream_access_sessions (id TEXT PRIMARY KEY,code_id TEXT NOT NULL,token_hash TEXT NOT NULL UNIQUE,created_at TEXT NOT NULL,expires_at TEXT NOT NULL)');
- const db:AccessStore={prepare(query){let values:unknown[]=[];return {bind(...args){values=args;return this},async first<T>(){return sqlite.prepare(query).get(...values as any[]) as T||null},async all<T>(){return {results:sqlite.prepare(query).all(...values as any[]) as T[]}},async run(){return sqlite.prepare(query).run(...values as any[])}}}};
+ const db:AccessStore={prepare(query){let values:unknown[]=[];return {bind(...args){values=args;return this},async first<T>(){return sqlite.prepare(query).get(...values as SQLInputValue[]) as T||null},async all<T>(){return {results:sqlite.prepare(query).all(...values as SQLInputValue[]) as T[]}},async run(){return sqlite.prepare(query).run(...values as SQLInputValue[])}}}};
  return {db,sqlite};
 }
 test('código gerado funciona e o banco armazena somente hashes dos segredos',async()=>{
