@@ -25,3 +25,9 @@ Admin atual: estatísticas reais de visitas, textos hero/história/VIP/PIX/conta
 5. Fases seguintes: design system/showcase; shell/home; páginas; CMS/admin/segurança; conteúdo novo; validação/a11y/performance/créditos. Ao fim de cada fase: build, commit e resumo de cinco linhas. Commits locais não são publicação.
 
 Validação da base: pnpm fixado instalado com lockfile congelado; tipos e build Next aprovados; 17 testes existentes passaram. `build:next` sem DATABASE_URL apenas validou a aplicação, sem alterar banco. A cobertura E2E real do novo painel usará banco local isolado. O logo novo foi recebido visualmente no chat, mas o arquivo original ainda não está exposto no filesystem; incorporação por upload parametrizado, sem redesenhar a marca.
+
+## Fase 2 — design system
+
+Criados tokens vermelho/preto/grafite, escala de 4px, raios, superfícies, glow e tipografia fluida. Fontes oficiais locais Black Ops One, Inter e JetBrains Mono com swap e cópias OFL. Componentes próprios de botão/card/spotlight, badge, formulário, modal acessível, abas, accordion, tooltip, killfeed, contador e skeleton; símbolos CS geométricos autorais. Showcase `/componentes` com noindex. As páginas antigas só recebem o novo shell a partir da fase 3.
+
+Pesquisa GitHub concluída: Motion, AutoAnimate e Vanilla Tilt são MIT; escolhido implementar os efeitos pequenos com APIs nativas, sem copiar código ou adicionar bibliotecas de animação. Créditos em THIRD_PARTY.md. bcrypt.js e Playwright preparados para as fases de segurança/E2E. Tipos e build Next da fase passaram; os 55 erros/29 avisos de lint são da base auditada e permanecem no plano de correção, sem desligar regras para esconder o problema. A marca continuará parametrizada até o arquivo original do logo ficar acessível.
