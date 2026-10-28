@@ -11,19 +11,9 @@ import {dirname} from 'node:path';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const layout = await readFile(join(root, 'app/layout.tsx'), 'utf8');
-const sourceFiles = ['app/globals.css', 'app/styles/community-streaming.css'];
+const sourceFiles = ['app/globals.css','app/styles/community-streaming.css','app/styles/mythskill.css','app/styles/mythskill-admin.css','app/styles/mythskill-premium.css'];
 const required = [
-  ['Home: passos de onboarding', '.onboarding-grid'],
-  ['Home: banner de benefício', '.player-benefit-banner'],
-  ['Streaming: capa do acesso', '.stream-access-landing'],
-  ['Streaming: fundo do popup', '.stream-gate-backdrop'],
-  ['Streaming: caixa centralizada', '.stream-gate-dialog'],
-  ['Streaming: área interna', '.organized-streaming'],
-  ['Streaming: cards do catálogo', '.stream-grid'],
-  ['Streaming: janela do player', '.stream-modal'],
-  ['Streaming: seleção de episódios', '.episode-picker'],
-  ['Admin: gerenciamento de códigos', '.access-code-list'],
-  ['Regras: popup', '.rules-backdrop'],
+ ['Mapas expansíveis','.premium-map-rail'],['Agenda e comandos','.premium-hub-grid'],['Linha do tempo','.premium-timeline-line'],['Layout e tokens','.ms-root'],['Navegação própria','.ms-nav'],['Hero','.ms-hero'],['Placar','.ms-scoreboard'],['Console','.ms-console'],['Buy menu','.ms-buy-menu'],['Radar QGS','.ms-live-card'],['Modal acessível','.ms-modal'],['Tema do painel','.ms-admin'],['Editor de seções','.ms-editor-item'],['Streaming: catálogo','.organized-streaming'],['Streaming: cards','.stream-grid'],['Streaming: player','.stream-modal'],['Streaming: episódios','.episode-picker'],['Códigos','.access-code-list']
 ];
 
 async function allCssIn(directory) {

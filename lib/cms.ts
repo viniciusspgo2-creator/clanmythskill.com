@@ -1,12 +1,15 @@
-import { env } from '@/lib/platform';
-import { defaults,mergeSiteSettings, type Settings } from './defaults';
-import { articles, type Article } from './articles';
-export async function getContent():Promise<{settings:Settings;articles:Article[]}> {
- if(!env.DB) return {settings:defaults,articles};
+import {cache} from 'react';
+import {env} from '@/lib/platform';
+import {defaults,mergeSiteSettings,type Settings} from './defaults';
+import {articles,isArticlePublic,type Article} from './articles';
+import {mergeDesign,type SiteDesign} from './mythskill-content';
+export const getContent=cache(async function getContent(includeDrafts=false):Promise<{settings:Settings;articles:Article[];design:SiteDesign}> {
+ if(!env.DB) return {settings:defaults,articles,design:mergeDesign(null,defaults)};
  const [saved,overrides] = await Promise.all([env.DB.prepare('SELECT value FROM content WHERE key = ?').bind('settings').first<{value:string}>(),env.DB.prepare('SELECT data FROM posts').all<{data:string}>()]);
+ const published=await env.DB.prepare('SELECT value FROM content WHERE key=?').bind('mythskill:published').first<{value:string}>();
  const map=new Map(articles.map(a=>[a.slug,a]));overrides.results.forEach(row=>{const a=JSON.parse(row.data) as Article;map.set(a.slug,a);});
- return {settings:mergeSiteSettings(saved?JSON.parse(saved.value):{}),articles:[...map.values()]};
-}
+ const settings=mergeSiteSettings(saved?JSON.parse(saved.value):{});if(!includeDrafts)settings.servers=settings.servers.filter(s=>s.active!==false);return {settings,articles:[...map.values()].filter(a=>includeDrafts||isArticlePublic(a)),design:mergeDesign(published?JSON.parse(published.value):null,settings)};
+});
 export async function getStats(){
  if(!env.DB)throw new Error('Banco de dados indisponível.');
  const today=new Date().toLocaleDateString('en-CA',{timeZone:'America/Sao_Paulo'});

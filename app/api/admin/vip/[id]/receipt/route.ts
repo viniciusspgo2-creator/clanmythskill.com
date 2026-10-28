@@ -1,0 +1,5 @@
+import { env } from '@/lib/platform';
+import { hasRole } from '@/lib/admin-auth';
+import { readRecord } from '@/lib/cms-store';
+import type { VipRequest } from '@/lib/vip-requests';
+export async function GET(_req:Request,{params}:{params:Promise<{id:string}>}){if(!await hasRole('admin','vip'))return new Response(null,{status:403});const{id}=await params;if(!/^[a-f0-9-]{36}$/.test(id))return new Response(null,{status:404});const item=await readRecord<VipRequest|null>('vip:request:'+id,null);if(!item)return new Response(null,{status:404});const file=await env.BUCKET?.get(item.receipt.key);if(!file)return new Response(null,{status:404});const ext=item.receipt.type==='application/pdf'?'pdf':item.receipt.type==='image/jpeg'?'jpg':item.receipt.type==='image/webp'?'webp':'png';return new Response(file.body,{headers:{'Content-Type':item.receipt.type,'Content-Disposition':`attachment; filename="comprovante-${id}.${ext}"`,'Cache-Control':'private,no-store','X-Content-Type-Options':'nosniff'}});}

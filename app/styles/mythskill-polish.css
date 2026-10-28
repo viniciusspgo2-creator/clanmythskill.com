@@ -1,0 +1,111 @@
+/* MythSkill 2026 · ajustes direcionados de UX e acessibilidade, sem substituir o layout original. */
+/* 01 · Header fixo, sem efeito de janela flutuante. */
+.ms-root .ms-nav,
+.ms-root .ms-nav.is-compact {
+  position:fixed;top:0;left:0;right:0;transform:none;width:100%;max-width:none;
+  margin:0;padding:0;z-index:95;border:0;border-bottom:1px solid #b927394d;
+  border-radius:0;background:rgba(9,8,13,.97);
+  box-shadow:0 8px 32px #0007;backdrop-filter:blur(18px);
+}
+.ms-root .ms-nav-inner,
+.ms-root .ms-nav.is-compact .ms-nav-inner {
+  max-width:1500px;width:min(100%,1500px);min-height:86px;
+  margin:0 auto;padding:8px 26px;border:0;border-radius:0;background:transparent;box-shadow:none;
+}
+.ms-root .ms-nav.is-compact .ms-nav-inner{min-height:72px;}
+.ms-root .ms-nav .ms-brand img{height:68px;width:116px;transition:height .22s}
+.ms-root .ms-nav.is-compact .ms-brand img{height:58px}
+.ms-root .ms-nav-desktop a{font-size:15px;font-weight:650;transition:color .2s}
+.ms-root .ms-nav-desktop a:hover{color:#fff}
+.ms-root .ms-nav-actions{gap:14px}
+.ms-root .ms-nav-vip{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
+  gap:9px;min-height:43px;padding:10px 16px;
+  border:1px solid #f1bc5657;border-radius:10px;
+  background:linear-gradient(130deg,#3a260f85,#38131580);
+  color:#ffe6aa!important;font:800 15px/1.2 Inter,sans-serif;
+  box-shadow:inset 0 1px 0 #fff1;transition:border-color .2s,background .2s,transform .2s;
+}
+.ms-root .ms-nav-vip svg,.ms-root .ms-mobile-dock a[href='/ativar-vip'] svg{color:#ffca49;fill:#ffca4930}
+.ms-root .ms-nav-vip:before{content:'';position:absolute;top:-3px;right:-3px;width:7px;height:7px;border-radius:50%;background:#ffc94b;box-shadow:0 0 0 3px #0f0d12,0 0 14px #ffca49}
+.ms-root .ms-nav-vip:hover{border-color:#ffce6f;background:#573a1a;transform:translateY(-1px)}
+.ms-root .ms-nav-vip:focus-visible{outline:2px solid #ffd45a}
+/* Scroll targets never hide behind the fixed header. */
+.ms-root section[id]{scroll-margin-top:102px}
+/* 02 · Meaningful metrics have consistent icon alignment. */
+.ms-root .premium-metrics>.ms-container{gap:clamp(16px,3vw,42px)}
+.ms-root .premium-metrics .ms-container>div{display:grid;grid-template-columns:38px minmax(0,1fr);grid-template-rows:auto auto;align-items:center;column-gap:15px;row-gap:3px;min-width:0}
+.ms-root .premium-metrics .ms-container>div svg{grid-column:1;grid-row:1 / span 2;margin:0;width:30px;height:30px;justify-self:center}
+.ms-root .premium-metrics .ms-container>div strong{grid-column:2;grid-row:1;font-size:clamp(30px,3vw,43px);line-height:1.1}
+.ms-root .premium-metrics .ms-container>div span{grid-column:2;grid-row:2;font-size:13px;line-height:1.45}
+/* 03 · Steam must read as a button, not an unlabeled arrow. */
+.ms-root .ms-score-actions{align-items:center;flex-wrap:wrap;gap:10px}
+.ms-root .ms-steam-connect{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:43px;padding:10px 15px;border:1px solid #ff596783;border-radius:10px;background:linear-gradient(125deg,#ab122a,#da1836);color:white;font:750 13px/1.2 Inter,sans-serif;white-space:nowrap;box-shadow:0 5px 14px #e5143225;transition:transform .2s,background .2s}
+.ms-root .ms-steam-connect:hover{transform:translateY(-2px);background:#fa2443}
+.ms-root .ms-steam-connect svg{flex-shrink:0}
+/* 04 · Rules: read-friendly hierarchy and breathing room. */
+.ms-root .ms-rules-content{padding-top:12px}
+.ms-root .ms-rules-alert{display:flex;gap:13px;align-items:flex-start;background:#f5a6230e;border:1px solid #e7a13e45;border-radius:12px;padding:14px 16px;margin-bottom:18px;color:#ffe0a5;font:500 14px/1.55 Inter,sans-serif}
+.ms-root .ms-rules-alert svg{color:#ffc75f;flex-shrink:0;margin-top:2px}
+.ms-root .ms-rule-cards{list-style:none;display:grid;gap:8px;padding:0;margin:0}
+.ms-root .ms-rule-cards li{display:flex;align-items:center;gap:15px;min-height:65px;padding:12px 14px;background:#ffffff07;border:1px solid #ffffff10;border-radius:12px;transition:border-color .2s,background .2s}
+.ms-root .ms-rule-cards li:hover{background:#ffffff0d;border-color:#e54c6445}
+.ms-root .ms-rule-emoji{display:grid;place-items:center;flex-shrink:0;width:43px;height:43px;background:#d9263620;border-radius:10px;font-size:21px}
+.ms-root .ms-rule-cards small{display:block;font:750 10px/1.4 'JetBrains Mono',monospace;letter-spacing:1.1px;color:#f47787;margin-bottom:4px}
+.ms-root .ms-rule-cards p{margin:0;font:500 14px/1.55 Inter,sans-serif;color:#e8e0e7;overflow-wrap:anywhere}
+.ms-root .ms-rules-foot{display:flex;align-items:center;gap:10px;margin-top:18px;padding:16px 4px 5px;color:#d8cdd4;font:600 13px/1.5 Inter,sans-serif}
+.ms-root .ms-rules-foot svg{color:#f35b71}
+/* 05 · Premium pricing panel: integrated footer, never a black stripe. */
+.ms-root .ms-buy{background:radial-gradient(ellipse at 15% 40%,#99152e36,transparent 68%),linear-gradient(180deg,#350d1c 0%,#2c0c19 100%)}
+.ms-root .ms-buy-menu{background:linear-gradient(145deg,#24111bcf,#160d16f2);border-color:#ff788b42;box-shadow:0 18px 65px #0003}
+.ms-root .ms-buy-menu>footer{margin:14px -28px -28px;padding:20px 28px;background:linear-gradient(90deg,#421722a6,#2a101c6b);border-top:1px solid #ff788b32;color:#f6cfd6;position:relative;z-index:2}
+.ms-root .ms-buy-menu>footer span{color:#e9c4ce}
+.ms-root .ms-buy-menu>div:not(.ms-buy-watermark){border-color:#ffffff1b}
+/* 06 · Readable FAQ: regular font / spacing and no inherited negative letter spacing. */
+.ms-root .ms-faq-section .ms-accordion-item{border-bottom:1px solid #ffffff20}
+.ms-root .ms-faq-section .ms-accordion-trigger,
+.ms-root .ms-values .ms-accordion-trigger{font-family:Inter,system-ui,sans-serif!important;font-size:16px!important;font-weight:650!important;line-height:1.55!important;letter-spacing:normal!important;word-spacing:normal!important;text-transform:none!important;white-space:normal!important;padding:19px 12px!important;min-height:64px;overflow-wrap:break-word}
+.ms-root .ms-faq-section .ms-accordion-trigger:hover{color:#ffb3be;background:#ffffff04}
+.ms-root .ms-faq-section .ms-accordion-trigger svg{color:#fc6077}
+.ms-root .ms-faq-section .ms-accordion-content,.ms-root .ms-values .ms-accordion-content{font:400 15px/1.75 Inter,system-ui,sans-serif;color:#d3cbd2;letter-spacing:0;word-spacing:normal;padding:0 30px 22px 12px}
+/* 07 · Footer CTA stays above fold and remains clickable. */
+.ms-root .ms-footer-call .ms-link{display:inline-flex;align-items:center;gap:10px;border:1px solid #fa64765c;background:#ef27401d;padding:14px 19px;border-radius:10px;white-space:nowrap;font-size:14px;transition:background .2s,transform .2s}
+.ms-root .ms-footer-call .ms-link:hover{background:#f52d4337;transform:translateY(-2px)}
+/* 08 · Membership and community cards flow without harsh same-tone seam. */
+.ms-root .premium-hub{position:relative;background:linear-gradient(180deg,#1a0b14 0%,#310d1c 77%,#350d1c 100%);border-bottom:0}
+.ms-root .premium-hub:after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:62px;pointer-events:none;background:linear-gradient(to bottom,transparent,#350d1c);z-index:0}
+.ms-root .premium-hub>.ms-container{position:relative;z-index:1}
+.ms-root .ms-buy{border-top:0;position:relative}
+/* 09 · Maps: image framed, no pixelated oversharpen + subtle vignette. */
+.ms-root .premium-map{background:#28131d;border-color:#fa61734c;box-shadow:inset 0 0 24px #0004;isolation:isolate}
+.ms-root .premium-map>img{image-rendering:auto;filter:saturate(.88) contrast(1.06);opacity:.84;transition:filter .5s,transform .7s;}
+.ms-root .premium-map.is-active>img{filter:saturate(.98) contrast(1.07);transform:scale(1.015)}
+.ms-root .premium-map:after{background:linear-gradient(0deg,#190a10ef,#330a1685 48%,#160b1399 100%);mix-blend-mode:normal}
+.ms-root .premium-map-info{z-index:2}
+/* 10 · Continuous blog carousel with seamless repeating track; no scrollbar. */
+.ms-root .ms-journal-rail{position:relative;display:block;width:100%;overflow:hidden;padding-bottom:12px;scroll-snap-type:none;mask-image:linear-gradient(to right,transparent,#000 2.5%,#000 97.5%,transparent)}
+.ms-root .ms-journal-track{display:flex;align-items:stretch;gap:28px;width:max-content;animation:ms-blog-drift 64s linear infinite;will-change:transform}
+.ms-root .ms-journal-set{display:flex;gap:28px;align-items:stretch;flex-shrink:0;width:max-content}
+.ms-root .ms-journal-set .ms-article-tile{display:block;flex:0 0 365px;width:365px;min-width:0;max-width:none;scroll-snap-align:none}
+.ms-root .ms-journal-set .ms-article-tile>div{height:auto;aspect-ratio:1.7}
+.ms-root .ms-journal-track:hover,.ms-root .ms-journal-track:focus-within{animation-play-state:paused}
+.ms-root .ms-journal-set[aria-hidden='true']{pointer-events:none}
+@keyframes ms-blog-drift{from{transform:translateX(0)}to{transform:translateX(calc(-50% - 14px))}}
+/* 11 · Intro player stays within home and clear of the chat controls. */
+.ms-root .ms-welcome-audio{position:fixed;right:24px;bottom:88px;z-index:85;display:flex;align-items:center;gap:12px;width:min(308px,calc(100vw - 32px));padding:11px 12px 11px 15px;background:#111015ee;border:1px solid #f05b765c;border-radius:13px;box-shadow:0 12px 45px #0009;backdrop-filter:blur(14px)}
+.ms-root .ms-welcome-dot{flex-shrink:0;width:9px;height:9px;border-radius:50%;background:#ac8992}
+.ms-root .ms-welcome-dot.is-playing{background:#f73951;box-shadow:0 0 0 5px #f739512a,0 0 18px #fa3654}
+.ms-root .ms-welcome-copy{display:flex;flex:1;flex-direction:column;min-width:0;gap:3px}
+.ms-root .ms-welcome-copy strong{color:#faf4f6;font:750 10px/1.3 Inter,sans-serif;letter-spacing:.7px}
+.ms-root .ms-welcome-copy small{font:450 12px/1.3 Inter,sans-serif;color:#c5b5bc}
+.ms-root .ms-welcome-audio button{display:flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0;min-height:36px;padding:8px 10px;color:#fff;border:1px solid #ef51615b;border-radius:8px;background:#b31932;font:700 12px Inter,sans-serif;transition:background .2s}
+.ms-root .ms-welcome-audio button:hover{background:#df2441}
+@media(max-width:1180px){.ms-root .ms-nav-desktop{gap:15px}.ms-root .ms-nav-desktop a{font-size:13px}.ms-root .ms-nav-inner{padding-inline:19px}.ms-root .ms-score-main{grid-template-columns:38px minmax(180px,1fr) minmax(170px,1fr) minmax(190px,auto);gap:12px}.ms-root .ms-steam-connect{font-size:12px;padding-inline:11px}}
+@media(max-width:980px){.ms-root .ms-nav-inner,.ms-root .ms-nav.is-compact .ms-nav-inner{min-height:70px}.ms-root .ms-nav-desktop{display:none}.ms-root .premium-metrics>.ms-container{flex-wrap:wrap}.ms-root .premium-metrics>.ms-container>div{flex:1 1 180px}.ms-root .ms-welcome-audio{right:15px;bottom:82px}}
+@media(max-width:700px){.ms-root .ms-nav-inner,.ms-root .ms-nav.is-compact .ms-nav-inner{padding:7px 13px;min-height:70px}.ms-root .ms-nav-vip{padding:8px 10px;font-size:12px;min-height:38px}.ms-root .ms-nav-play{font-size:12px;padding:9px 11px;min-height:38px}.ms-root .ms-nav .ms-brand img{height:52px;width:90px}.ms-root .ms-nav.is-compact .ms-brand img{height:50px}.ms-root .ms-score-main{grid-template-columns:32px minmax(0,1fr);gap:12px}.ms-root .ms-score-main .ms-score-ip{grid-column:2;grid-row:2;overflow-wrap:anywhere;font-size:13px}.ms-root .ms-score-actions{grid-column:2;grid-row:3;justify-content:flex-start}.ms-root .ms-steam-connect{font-size:12px}.ms-root .premium-metrics>.ms-container>div{flex:1 1 130px}.ms-root .premium-metrics .ms-container>div strong{font-size:30px}.ms-root .ms-buy-menu>footer{margin:14px -22px -22px;padding:16px 22px}.ms-root .ms-journal-set .ms-article-tile{flex-basis:285px;width:285px}.ms-root .ms-journal-track{gap:20px;animation-duration:70s}.ms-root .ms-journal-set{gap:20px}.ms-root .ms-footer-call{align-items:flex-start}.ms-root .ms-footer-call .ms-link{white-space:normal}.ms-root .ms-welcome-audio{right:12px;bottom:86px;max-width:285px}}
+@media(prefers-reduced-motion:reduce){.ms-root .ms-journal-rail{overflow-x:auto;mask-image:none}.ms-root .ms-journal-track{animation:none!important}.ms-root .ms-journal-set[aria-hidden='true']{display:none}}
+/* 08b · Insígnias do ranking: ícone e legenda sempre centralizados. */
+.ms-root .premium-rank-ladder article{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;min-height:142px;padding:15px 10px}
+.ms-root .premium-rank-ladder article img{display:block;width:125px;height:56px;max-width:100%;object-fit:contain;margin:0 auto;flex-shrink:0}
+.ms-root .premium-rank-ladder article span{display:flex;align-items:center;justify-content:center;min-height:33px;margin:0;text-align:center;font:600 13px/1.4 Inter,sans-serif;letter-spacing:0;overflow-wrap:break-word}
+@media(max-width:700px){.ms-root .premium-rank-ladder article{min-height:135px;gap:8px}.ms-root .premium-rank-ladder article img{width:104px;height:51px}.ms-root .premium-rank-ladder article span{font-size:12px}}

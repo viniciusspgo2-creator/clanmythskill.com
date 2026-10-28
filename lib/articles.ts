@@ -1,3 +1,4 @@
+import {newArticles} from './new-articles';
 export type Article = {
   id: string;
   slug: string;
@@ -10,9 +11,16 @@ export type Article = {
   sections: { heading: string; paragraphs: string[] }[];
   sources?: { label: string; url: string }[];
   published: boolean;
+  archived?: boolean;
+  bodyMarkdown?: string;
+  scheduledAt?: string;
+  imageAlt?: string;
+  tags?: string[];
+  seoTitle?: string;
+  seoDescription?: string;
 };
 
-export const articles: Article[] = [
+export const legacyArticles: Article[] = [
   {
     id: 'historia-cs16', slug: 'counter-strike-16-de-mod-a-legado',
     title: 'De mod a legado: por que o Counter-Strike 1.6 continua vivo',
@@ -238,3 +246,8 @@ export const articles: Article[] = [
     ]
   }
 ];
+
+export const articles:Article[]=[...newArticles,...legacyArticles];
+export function isArticlePublic(a:Article){return a.published&&!a.archived&&(!a.scheduledAt||Date.parse(a.scheduledAt)<=Date.now());}
+
+export function articleCards(items:Article[]):Article[]{return items.map(({bodyMarkdown:_markdown,...a})=>{void _markdown;return {...a,sections:[],sources:[]};});}

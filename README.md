@@ -1,135 +1,98 @@
-# Clan MythSkill — Next.js
+# Clan MythSkill
 
-Site completo em português para o clan de Counter-Strike 1.6. Interface própria em carvão e laranja, responsiva, com imagens exclusivas, Home, Sobre, Ativar VIP, Journal com 10 artigos e Streaming Mithys.
+Site em português para uma comunidade de Counter-Strike 1.6. Identidade própria em preto, grafite e vermelho; Black Ops One, Inter e JetBrains Mono locais. Next 16 / React 19 / TypeScript / pnpm, com produção Next/Vercel + Neon e adaptadores preservados para a prévia Vinext/Cloudflare D1/R2.
 
-## Abrir o site
+## O que está incluído
 
-A prévia hospedada usa o código App Router com o runtime compatível Vinext/Cloudflare. Ela permanece privada para o proprietário. O diretório também funciona como um projeto Next.js padrão para a Vercel, usando Neon/Postgres.
+- Home em 12 seções, vídeo original, fallback por poster, placar expansível, console simulado, menu VIP, teaser Mithys, bento, timeline, mapas/glossário, Journal, FAQ e CTA.
+- Radar do servidor: API QGS HTTPS com mapa, ocupação e consulta a cada 45 segundos. Offline confirmado é diferente de API indisponível; dados antigos são identificados. A API não fornece ping, portanto ele é ocultado.
+- `/ranking`: TOP15 do 4FUN por **XP/pontuação**, lido da tabela pública do iceeedR. Cache de cinco minutos, instantâneo persistido, horário da última consulta e falha identificada. Não é atualização por WebSocket. O parser valida 15 posições e XP em ordem decrescente antes de exibir. Não há dados fictícios de fallback. Nenhum HTML, CSS ou script da fonte é incorporado à página.
+- Sobre, VIP em etapas com comprovante privado, Journal com os 10 artigos antigos + 10 novos, guia por abas, streaming por código, 404 e manutenção.
+- Console administrativo: conteúdo estruturado, seções com ordem/duplicação/toggle, páginas adicionais, navegação, biblioteca WebP com recorte/foco/alt, hero, servidores, ranking, VIP, solicitações, Mithys, artigos, guia, FAQ, tema, SEO, usuários e sistema.
+- Rascunho com revisão concorrente, prévia autenticada ao vivo, publicação, histórico e restauração. Operações de segurança, solicitações, mídia, códigos e catálogo são aplicadas imediatamente e identificadas como tal no painel.
 
-- Home: `/`
-- Sobre: `/sobre`
-- VIP: `/ativar-vip`
-- Blog: `/blog`
-- Guia do Player: `/guia`
-- Streaming: `/streaming`
-- Administração: `/admin`
+## Executar localmente
 
-## Publicar na Vercel — passo a passo
+Recomendado Node.js 24; mínimo 22.13. O projeto fixa pnpm no campo `packageManager`.
 
-1. Extraia o ZIP. A pasta que contém `package.json` é a raiz do projeto.
-2. Coloque essa pasta em um repositório GitHub e importe-o em **Vercel → Add New → Project**.
-3. Em **Framework Preset**, selecione **Next.js**.
-4. Em **Build & Output Settings**, ative a edição de **Build Command** e use `pnpm build:next`. Não defina uma pasta de saída manual.
-5. Em **Storage / Marketplace**, conecte um banco **Neon Postgres** ao projeto. O banco desta publicação é separado do banco da prévia.
-6. Em **Settings → Environment Variables**, cadastre `DATABASE_URL` com a string de conexão PostgreSQL do Neon. O projeto também reconhece `POSTGRES_URL` e `POSTGRES_PRISMA_URL` caso a integração já os forneça.
-7. Cadastre `ADMIN_PASSWORD` com uma senha exclusiva de pelo menos **16 caracteres**. Nunca use o prefixo `NEXT_PUBLIC_` nessa senha ou no banco.
-8. Cadastre `NEXT_PUBLIC_SITE_URL` com o endereço final, como `https://seu-projeto.vercel.app`, sem `/` no fim.
-9. Use **Node.js 22.x** ou superior. Clique em **Deploy**. Durante a compilação, o comando prepara as tabelas no Neon sem apagar dados existentes.
-10. Abra `https://seu-endereco/admin` e entre com a senha escolhida. Na prévia privada, o painel usa sua conta ChatGPT autorizada, sem senha padrão.
-11. Em **Streaming Mithys → Capas e informações — TMDB**, salve seu **API Read Access Token**. O token não é incluído no código enviado ao navegador.
+```sh
+corepack enable
+pnpm install --frozen-lockfile
+cp .env.example .env.local
+```
 
-A ausência do banco interrompe o build da Vercel com uma mensagem clara. Não é necessário executar comandos SQL à mão. Se mudar as variáveis após um deploy, use **Deployments → Redeploy**.
+Preencha as variáveis. Para desenvolvimento sem Neon, remova `DATABASE_URL` e habilite `MYTHSKILL_LOCAL_DB=.sites-runtime/development.sqlite`. Use senhas/chaves novas para a sua instalação.
 
-## Rodar no computador
+```sh
+pnpm content:seed
+pnpm dev:next
+```
 
-Requisitos: Node.js >=22.13 e pnpm. Instale com `pnpm install`, copie `.env.example` para `.env.local` e preencha as variáveis. Execute `node --env-file=.env.local scripts/setup-neon.mjs` uma vez e depois `pnpm dev:next`. Para produção local: `pnpm build:next` e `pnpm start:next` (garanta que as variáveis estejam carregadas no ambiente).
+SQLite existe somente para desenvolvimento/testes, com arquivo privado e fora do Git. O adaptador recusa sua execução quando `VERCEL` está definido. Nenhum armazenamento local temporário é usado como banco na produção.
 
-## O que o painel gerencia
+## Publicar/atualizar na Vercel
 
-- Visualizações e soma de visitantes únicos por dia, sem números de demonstração. Navegadores são identificados por cookie aleatório; não são coletados IPs para as estatísticas.
-- Textos da hero, história do clan, preço/período VIP, chave PIX, contatos e servidores.
-- Banners e QR Code por upload (JPG/PNG/WebP até 4 MB) ou URL HTTPS.
-- Título e descrição SEO, metadados de compartilhamento, robots e sitemap.
-- Criação, edição, publicação e despublicação de artigos. Despublique um artigo para retirá-lo do site sem perder o texto.
-- Catálogo de streaming: sincronização, estado da API, filtros administrativos, destaque, ocultação, sinalização manual de offline e substituição de player por item.
-- Token TMDB validado no servidor, capas, sinopses e gêneros de filmes/séries.
-- Códigos do streaming: gerar por nome/nick, validade de 7/30/90 dias ou sem expiração, histórico de entradas e revogação.
-- Capa de compartilhamento para WhatsApp e redes em **Banners e imagens**. O arquivo padrão tem 1200 × 630 px.
+O trabalho desta revisão foi feito em commits locais; não houve push ou deploy automático.
 
-Na Vercel, os banners enviados são armazenados no Postgres, pois o disco da função não é permanente. Na prévia, imagens usam R2 e registros usam D1. Para volumes grandes de imagens, um armazenamento dedicado poderá substituir esse adaptador.
+1. Faça backup real do banco Neon e dos arquivos antes de atualizar. O bundle Git de auditoria é backup de código, não de dados.
+2. Preserve `DATABASE_URL`, artigos, catálogo, fontes, códigos e configurações existentes. Não troque o banco. Variantes `POSTGRES_URL` e `POSTGRES_PRISMA_URL` continuam reconhecidas.
+3. Configure `ADMIN_PASSWORD` forte para o primeiro acesso e `ADMIN_SESSION_SECRET` aleatório, além de `ADMIN_EMAIL` opcional. Veja `.env.example`; nunca publique segredos com prefixo `NEXT_PUBLIC_`.
+4. Configure `NEXT_PUBLIC_SITE_URL` com a URL definitiva. Ela é incorporada durante o build; alterar somente o ambiente do processo de execução não altera uma compilação pronta.
+5. Use o preset **Next.js**, instalação `pnpm install --frozen-lockfile` e build `pnpm build:next` do `vercel.json`. O setup SQL cria apenas tabelas/índices ausentes, sem apagar dados. Há também `pnpm build:next:webpack`, compilador suportado e usado na validação deste ambiente após um erro de porta interna do Turbopack.
+6. Execute `pnpm content:seed` em um ambiente com acesso ao mesmo banco quando quiser persistir os conteúdos iniciais. O seed adiciona entradas ausentes, mantém artigos/configurações existentes e usa marcador para não repetir os complementos de mapas/FAQ. Revise tudo em `/admin`.
+7. Confira login, QR/Pix, contatos, três IPs, radar, ranking e fontes do Mithys antes da divulgação.
 
-## VIP: comportamento exato
+Neon armazena os dados e arquivos enviados pelo adaptador atual. Volumes grandes de mídia podem justificar R2/S3, preservando o contrato `BUCKET`. A prévia original mantém D1/R2 e identidade autorizada da plataforma, sem senha universal. O build `pnpm build` continua destinado a essa prévia.
 
-O preço inicial é R$ 5,00 para 30 dias, seguindo o exemplo fornecido. O período pode ser alterado no painel. Não foram inventadas vantagens como armas, vida, slots ou imunidade: confirme as vantagens reais com a administração.
+## Primeiro acesso e permissões
 
-O jogador seleciona um comprovante local, revisa os dados e abre o WhatsApp **+55 12 99670-6509** com a mensagem pronta. **Links do WhatsApp não anexam arquivos.** A página instrui o jogador a usar o clipe do WhatsApp, ou o compartilhamento nativo de arquivo quando o dispositivo oferece essa função. O site não recebe o comprovante, não confirma o PIX e não ativa acesso no servidor automaticamente. A confirmação final é feita pela administração.
+A primeira autenticação válida cria a conta administrativa persistida com bcrypt de custo 12. Depois disso, a senha no banco prevalece; alterar `ADMIN_PASSWORD` no ambiente não redefine uma conta existente. O e-mail inicial padrão é `admin@mythskill.local`, e o primeiro acesso também permite deixar o campo de e-mail vazio para a conta principal.
 
-O QR Code incluído é exatamente o anexo original, sem redesenho. Se mudar a chave PIX, substitua também o QR Code no painel.
+Papéis: administrador completo; editor de conteúdo/Journal/mídia; moderador de solicitações VIP. Sessões assinadas duram seis horas, usam cookie HttpOnly/SameSite e Secure em HTTPS, são persistidas por hash e podem ser revogadas. Mudanças de senha/permissão invalidam sessões anteriores. O 2FA TOTP opcional oferece chave para cadastramento manual no autenticador e rejeita reutilização do mesmo código. Guarde uma sessão de outro administrador enquanto configura a recuperação operacional das contas.
 
-## Streaming: origem e atualização
+Login e formulários têm limitação persistida de tentativas. Escritas exigem origem válida, autorização e validação no servidor. Uploads verificam tipo, extensão, assinatura e tamanho; HTML não confiável é removido do conteúdo editorial. Só administradores podem configurar scripts externos de analytics. Painel e prévia têm noindex.
 
-API fornecida: `https://api.reidoscanais.cam`. O servidor consulta `/channels` e `/sports`; se essa rota falhar, o navegador usa diretamente a API pública com CORS habilitado. O botão de atualização no Admin também pode persistir esse catálogo consultado pelo navegador. a busca e os filtros atuam no catálogo sincronizado. O EPG é atualizado em intervalos de 5 minutos. A atualização manual tem intervalo mínimo de um minuto. Falhas preservam o último catálogo salvo e exibem um aviso. Sem catálogo anterior, aparece um estado de indisponibilidade com nova tentativa.
+## Conteúdo, mídia e backup
 
-O painel indica se a API respondeu e quando houve sincronização. **Resposta da API não comprova reprodução.** Os estados offline e oculto são ajustes manuais. A administração pode abrir as fontes para conferir e substituir um player. Não há números simulados, medição de ping dos servidores de jogo nem confirmação automática de todos os players externos.
+Salvar rascunho não altera o site público. Publicar conserva a versão anterior. Restaurar uma versão ou importar configuração carrega um rascunho para revisão. A revisão concorrente impede sobrescrever silenciosamente outra edição.
 
-O TMDB fornece **metadados**, e não filmes completos. O **Token de Leitura da API é suficiente**; não é necessário cadastrar também uma chave de API. Após configurar o token, o catálogo traz os 20 filmes e as 20 séries populares retornados pelo serviço. Canais, esportes, filmes e séries têm espaços separados, busca, filtros próprios e favoritos em cada categoria. A hero alterna capas e cenários reais do catálogo TMDB, com pausa e redução de movimento.
+O editor do Journal trabalha em blocos ou Markdown convertido para blocos (`##` para títulos e linhas vazias para parágrafos). Artigos podem ser rascunhos, agendados ou arquivados; o servidor filtra datas futuras e arquivados. Os endereços antigos permanecem.
 
-A integração automática **StreamBetter** vem ativa nesta versão. Para substituir uma fonte, abra **Admin → Streaming Mithys**, selecione um título, informe uma fonte HTTPS e escolha **embed**, **HLS (.m3u8)** ou **MP4**. Salve o player do título. Embeds usam iframe; HLS e MP4 usam vídeo com controles e HLS.js quando necessário. O provedor deve permitir incorporação e, para vídeo direto, acesso CORS. Com a integração StreamBetter ativa, os IDs encontrados na lista do provedor recebem player automaticamente; fontes manuais têm prioridade. Sem fonte automática ou manual, o site informa que a reprodução não está cadastrada e oferece o link oficial de onde assistir. O TMDB é atribuído com logo e aviso oficial.
+Imagens são convertidas para WebP no navegador, com limite de 2400 px, recorte central opcional e foco ajustável. O upload final aceita até 3 MB, exige alt e mantém o endereço quando substituído. O foco é aplicado às imagens públicas. Comprovantes VIP ficam separados da biblioteca pública.
 
-A pedido do proprietário, o atributo sandbox foi removido dos iframes externos. O site exibe um aviso destacado de conteúdo de terceiros com anúncios antes da reprodução. Fontes podem abrir outras abas. Não há alteração do código do provedor nem bloqueador ou promessa de remoção de anúncios. A disponibilidade depende de cada fonte.
+O JSON de backup inclui conteúdo, referências de mídia, solicitações e hashes dos códigos. Exclui senhas, segredos, tokens de provedores e sessões. Ao importar um backup completo, a configuração entra em rascunho; registros operacionais ausentes são recuperados sem apagar existentes nem reativar códigos já revogados. **Arquivos binários exigem backup separado do armazenamento**; o JSON contém referências. Reconfigure tokens de provedores separadamente após recuperação. O cache do ranking pode ser consultado novamente na fonte.
 
-### Filmes e séries — StreamBetter
+O logo original enviado como imagem no chat não ficou disponível como arquivo no filesystem desta sessão. Foi preservado o placeholder textual `MYTHSKILL`, com campos de logo, alt, favicon e OG no painel. O favicon e a OG provisórios são próprios do novo tema, sem reproduzir a marca anexada. Envie o arquivo exato pela biblioteca e selecione-o em **Hero e identidade**.
 
-A integração usa os embeds públicos documentados em https://streambetter.lol/docs: `/filme/{tmdb_id}` e `/serie/{tmdb_id}/{temporada}/{episodio}`. Esses embeds não exigem chave da API paga de links diretos. O site não extrai vídeos nem contorna as verificações do provedor.
+## VIP
 
-A lista `/api/titles/ids` é validada e armazenada por 6 horas, com ETag. A vitrine combina os populares do TMDB com até 60 novidades de filmes e 60 de séries retornadas por `/api/titles`. Apenas IDs listados recebem o player automático. O total informado pelo provedor no Admin se refere à lista de IDs completa, não ao tamanho da vitrine. Uma falha preserva os últimos dados válidos e adia novas tentativas.
+Preço inicial R$ 5,00 / 30 dias, Pix e WhatsApp **+55 12 99670-6509** preservados. O site registra dados e comprovante privado, prepara a mensagem e oferece compartilhamento nativo quando disponível. Um link WhatsApp não anexa arquivos automaticamente; use o clipe da conversa se necessário. Pagamento, benefícios e ativação são conferidos manualmente. Não há confirmação bancária ou ativação automática.
 
-Em **Admin → Streaming Mithys → Player automático — StreamBetter**, você pode desativar a integração e atualizar o catálogo. No editor de cada título, é possível desativar apenas seu player automático ou substituí-lo por uma URL específica. Canais e esportes continuam com a integração já configurada.
+## Status e ranking
 
-Nas séries, os controles escolhem temporada e episódio e remontam o iframe para a seleção. A lista de temporadas e episódios usa o token TMDB guardado no servidor, com cache de 24 horas. Se a lista não responder, o player pode informar os números manualmente. Especiais usam temporada 0. A listagem do TMDB não confirma que o fornecedor tenha uma fonte para cada episódio.
+QGS: `https://api.qgshosting.com/status/index.php/source/IP:PORTA`. Consulta no backend a endereços cadastrados, valida resposta, agrupa pedidos simultâneos e usa cache. O admin pode desligar o radar ou escolher A2S direto. A2S requer `ENABLE_A2S=1` e UDP permitido pela hospedagem; falhas não geram números fictícios.
 
-Legendas, troca automática de fonte, anúncios, autoplay do próximo episódio e verificações dentro do iframe pertencem ao provedor. Durante a conferência, a API pública respondeu; o iframe solicitou uma verificação humana do Cloudflare neste navegador. A reprodução do vídeo completo não foi certificada.
+Ranking: `http://patente.iceeedr.com.br/index.php?ip=131.196.198.52%3A27248&order=XP&dir=DESC&page=1`. A fonte atualmente serve HTML por HTTP e redireciona sua versão HTTPS para HTTP. A leitura acontece no servidor; o navegador recebe dados estruturados do próprio site. O adaptador respeita proxy HTTP configurado no ambiente e não encaminha cookies ou credenciais dos usuários à fonte. Cheerio (MIT) interpreta somente campos de dados. Fonte fora do ar ou estrutura modificada gera estado indisponível/última leitura, com link ao original. A integração depende da disponibilidade e manutenção do painel externo.
 
-### Acesso por código
+Não foi criada integração de banidos, conforme a última orientação do proprietário. O link externo antigo de banimentos foi preservado junto aos demais links existentes.
 
-O streaming é um benefício dos players liberados pela administração. **Admin → Códigos de acesso → Gerar código** permite identificar o jogador, definir validade e copiar o código completo, exibido somente nesse momento. Envie-o ao player pelo canal escolhido pela administração. O site não envia mensagens automaticamente. A lista mostra apenas o sufixo; se perder um código, revogue e gere outro.
+## Mithys e vídeo
 
-O popup solicita o código. A página e a API do catálogo verificam a permissão no servidor. Os códigos são aleatórios e o banco guarda hashes; a sessão usa cookie HttpOnly de até 7 dias, limitado também pela validade do código. Revogar impede novas entradas e invalida sessões existentes nas verificações do servidor. A tela já aberta confere o acesso a cada 30 segundos e ao voltar para a aba. Isso não é DRM: não controla URLs públicas do provedor que alguém já tenha copiado. Administradores autenticados acessam sem código.
+Todos os provedores, seleção de fontes, códigos, validade e revogação existentes foram mantidos. TMDB fornece metadados; StreamBetter associa fontes por IDs; HLS/MP4 e embeds usam os players anteriores. Sem fonte válida, não há botão de assistir. Filmes/séries externos podem conter anúncios, bloqueios e indisponibilidade; não há certificação de reprodução de todo o catálogo nem DRM.
 
-A administração decide a elegibilidade e a presença dos players; não há integração automática com frequência no servidor de CS. O formulário tem limitação de tentativas por minuto persistida no banco.
+Vídeo original: YouTube `8XxzRvILdOc`, início em 93 segundos. Autoplay mudo em telas amplas, poster e botão para reproduzir em telas menores; economia de dados e reduced-motion priorizam o poster. A pausa está disponível após o início. Conteúdo, anúncios e disponibilidade dependem do YouTube.
 
-## Vídeo da hero
+## Validação e comandos
 
-YouTube `8XxzRvILdOc`, início em **93 segundos (1:33)**, mudo, sem controles, escurecido, com repetição. O IFrame API só torna o vídeo visível após receber o estado de reprodução. A Home usa somente o vídeo e camadas de escurecimento, sem imagem sobreposta ou imagem de reserva. Há botão de pausa e respeito a redução de movimento. Autoplay, incorporação, anúncios e identificação do YouTube dependem da plataforma. A API atual não garante remover toda a marca ou informação do canal.
+```sh
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build:next:webpack
+pnpm exec playwright install --with-deps
+pnpm test:e2e
+```
 
-## Segurança e dados
+O runner E2E cria um SQLite isolado e senhas aleatórias de teste, recusa execução quando variáveis de banco de produção estão no shell e testa Chromium, Firefox e WebKit. A compilação precisa estar pronta. WebKit em Linux não equivale ao Safari instalado num Mac/iPhone; a conferência em aparelho Apple continua recomendada.
 
-Painel e APIs de escrita verificam autorização no servidor e origem da requisição. No Next.js padrão, o login usa senha de ambiente, sessão assinada de 6 horas, cookie HttpOnly/SameSite e limitação de tentativas por processo. Na prévia, usa identidade da plataforma e email autorizado configurado no ambiente. Não há senha universal, token TMDB no cliente ou credenciais no ZIP.
-
-## Fontes de conteúdo e referências técnicas
-
-- História oficial: https://blog.counter-strike.net/index.php/history/
-- Jogo e data comercial: https://store.steampowered.com/app/10/CounterStrike/
-- Anúncio Steam/1.6 de 15/09/2003: https://store.steampowered.com/oldnews/184
-- Referências individuais: seção Fontes e referências de cada artigo.
-- Motion, pesquisado como referência de animação: https://github.com/motiondivision/motion (microinterações finais implementadas em CSS, sem essa dependência).
-- Ícones Lucide: https://github.com/lucide-icons/lucide
-- Parâmetros YouTube: https://developers.google.com/youtube/player_parameters
-- TMDB: https://developer.themoviedb.org/docs/authentication-application
-- Neon: https://neon.com/docs/serverless/serverless-driver
-
-A história do clan é uma narrativa editorial criada a pedido, sem datas, estatísticas, títulos conquistados ou depoimentos inventados. Revise a história com a equipe antes de divulgação pública.
-
-## Comandos
-
-- `pnpm typecheck`: TypeScript
-- `pnpm build:next`: banco Neon + Next.js padrão
-- `pnpm dev:next` / `pnpm start:next`: desenvolvimento e produção Next
-- `pnpm build`: build de publicação da prévia via Vinext/Sites
-- `pnpm db:generate`: migrações D1 da prévia
-
-Arquivos centrais: `app/`, `components/`, `lib/defaults.ts`, `lib/articles.ts`, `lib/platform.ts`, `lib/platform-sites.ts`, `db/neon.sql`. O Vite troca os adaptadores apenas para a hospedagem da prévia; o Next usa os adaptadores padrão.
-
-## Atualizar um projeto já publicado
-
-1. Faça um backup do código atual e substitua os arquivos do repositório ligado à Vercel pelos deste pacote. **Redeploy sem atualizar o código mantém a versão antiga.**
-2. Preserve as variáveis `DATABASE_URL`, `ADMIN_PASSWORD` e `NEXT_PUBLIC_SITE_URL` que já usa. Não substitua o banco nem coloque segredos no GitHub.
-3. Confirme o comando `pnpm build:next` e publique o novo commit. Ele cria as tabelas de códigos/sessões sem apagar configurações, artigos ou estatísticas existentes.
-4. Acesse `/admin`. Em **Códigos de acesso**, gere os primeiros códigos. Em **Streaming Mithys**, confira se o StreamBetter está ativo e clique em **Atualizar catálogo**. Cadastre uma URL específica apenas quando quiser substituir a fonte automática.
-5. Em **Banners e imagens**, a nova capa de compartilhamento pode ser substituída. `NEXT_PUBLIC_SITE_URL` precisa apontar para seu domínio real; a miniatura exige site e imagem acessíveis publicamente. O WhatsApp pode manter a prévia antiga em cache.
-
-A imagem antiga padrão do primeiro servidor 4FUN é atualizada para o novo operador; imagens personalizadas e os demais textos/preços salvos são preservados. Novos conteúdos da Home, guia, FAQ, regras e destaques VIP fazem parte do código.
-
-## Validação
-
-17 testes automatizados cobrem autenticação, expiração, revogação de códigos e sessões, URLs de reprodução, preservação das configurações, os 10 artigos, validação de IDs, precedência de fontes e numeração de temporadas/episódios. TypeScript aprovado. A conferência visual inclui Home, regras, guia e bloqueio do streaming em desktop e largura de celular. A reprodução de todos os players externos não foi certificada e depende das fontes cadastradas pelo proprietário.
+Medições, cobertura, decisões e limites: [docs/redesign/VALIDACAO.md](docs/redesign/VALIDACAO.md). Fases/commits: [docs/redesign/FASES.md](docs/redesign/FASES.md). Dependências, versões, autoria e licenças: [CREDITS.md](CREDITS.md) e [THIRD_PARTY.md](THIRD_PARTY.md).

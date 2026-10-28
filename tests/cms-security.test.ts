@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { createDefaultDesign } from '../lib/mythskill-content';
+import { defaults } from '../lib/defaults';
+import { designSchema, isSafeLink, snapshotSchema } from '../lib/cms-validation';
+import { authorizeSnapshot } from '../lib/cms-admin';
+import { articles } from '../lib/articles';
+import { sameOrigin } from '../lib/request-security';
+import { checkedBytes } from '../lib/uploads';
+import { csvCell } from '../lib/vip-requests';
+import { parseA2S } from '../lib/server-status';
+import { verifyTotp } from '../lib/totp';
+
+test('CMS mantém defaults válidos e sanitiza HTML sem permitir código no conteúdo',()=>{const design=createDefaultDesign();design.pages[0].sections[0].title='<script>alert(1)</script><b>Título</b>';const clean=designSchema.parse(design);assert.equal(clean.pages[0].sections[0].title,'alert(1)Título');const duplicate=structuredClone(design);duplicate.pages.push(duplicate.pages[0]);assert.equal(designSchema.safeParse(duplicate).success,false);});
+test('links recusam esquemas executáveis, credenciais e destinos privados',()=>{for(const link of ['javascript:alert(1)','//evil.example','https://user:pass@example.com','https://127.0.0.1/x','http://10.2.3.4/x'])assert.equal(isSafeLink(link),false);assert.equal(isSafeLink('/guia#rede'),true);assert.equal(isSafeLink('https://www.clanmythskill.com'),true);});
+test('papéis limitam o editor aos dados editoriais',()=>{const before=snapshotSchema.parse({design:createDefaultDesign(),settings:defaults,articles});const after=structuredClone(before);const editor={id:'test',email:'editor@example.com',name:'Editor',role:'editor' as const,revision:1};after.design.pages[0].sections[0].title='Novo título';assert.doesNotThrow(()=>authorizeSnapshot(before,after,editor));after.settings.vipPrice=100;assert.throws(()=>authorizeSnapshot(before,after,editor));assert.throws(()=>authorizeSnapshot(before,before,{...editor,role:'vip'}));});
+test('CSRF aceita origem exata e Host efetivo, rejeita ausência ou origem externa',()=>{assert.equal(sameOrigin(new Request('http://localhost:3002/api',{headers:{Origin:'http://127.0.0.1:3002',Host:'127.0.0.1:3002'}})),true);assert.equal(sameOrigin(new Request('https://www.clanmythskill.com/api',{headers:{Origin:'https://evil.example'}})),false);assert.equal(sameOrigin(new Request('https://www.clanmythskill.com/api')),false);});
+test('upload verifica assinatura, extensão e tamanho; CSV neutraliza fórmulas',async()=>{await assert.rejects(()=>checkedBytes(new File(['<script>x</script>'],'fake.png',{type:'image/png'})));await assert.rejects(()=>checkedBytes(new File(['%PDF-1.7'],'document.png',{type:'application/pdf'}),true));assert.equal(csvCell('=SUM(A1:A2)'),`"'=SUM(A1:A2)"`);});
+test('A2S ignora pacotes truncados e interpreta mapa e slots sem inventar dados',()=>{assert.equal(parseA2S(new Uint8Array([255,255]),3),null);const bytes=Buffer.concat([Buffer.from([255,255,255,255,0x49,48]),Buffer.from('MythSkill\0de_dust2\0cstrike\0Counter-Strike\0'),Buffer.from([10,0,12,32])]);assert.deepEqual(parseA2S(bytes,34),{map:'de_dust2',players:12,slots:32,ping:34});});
+test('TOTP segue RFC 6238 e rejeita replay',async()=>{const secret='GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ';assert.equal(await verifyTotp(secret,'287082',undefined,59000),1);assert.equal(await verifyTotp(secret,'287082',1,59000),null);assert.equal(await verifyTotp(secret,'000000',undefined,59000),null);});

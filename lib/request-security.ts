@@ -1,0 +1,2 @@
+/** Browser Origin plus the effective Host protects writes behind Next's dev proxy. */
+export function sameOrigin(req:Request){const value=req.headers.get('origin');if(!value)return false;try{const origin=new URL(value);const current=new URL(req.url);if(origin.origin!==value||origin.username||origin.password)return false;if(origin.origin===current.origin)return true;return origin.protocol===current.protocol&&origin.host===req.headers.get('host');}catch{return false;}}
