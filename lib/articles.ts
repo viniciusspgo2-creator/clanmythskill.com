@@ -1,3 +1,4 @@
+import { newArticles } from './new-articles';
 export type Article = {
   id: string;
   slug: string;
@@ -19,7 +20,7 @@ export type Article = {
   seoDescription?: string;
 };
 
-export const articles: Article[] = [
+export const legacyArticles: Article[] = [
   {
     id: 'historia-cs16', slug: 'counter-strike-16-de-mod-a-legado',
     title: 'De mod a legado: por que o Counter-Strike 1.6 continua vivo',
@@ -246,4 +247,5 @@ export const articles: Article[] = [
   }
 ];
 
+export const articles:Article[]=[...newArticles,...legacyArticles];
 export function isArticlePublic(a:Article){return a.published&&!a.archived&&(!a.scheduledAt||Date.parse(a.scheduledAt)<=Date.now());}

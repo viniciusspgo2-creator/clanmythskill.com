@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {safeHttps,normalizeChannels,normalizeEvents,browserCatalog} from '../lib/stream-normalize';
 import {validPassword,newSession,verifySession} from '../lib/admin-auth';
-import {articles} from '../lib/articles';
+import {articles,legacyArticles} from '../lib/articles';
 
 test('players aceitam somente URLs HTTPS públicas sem credenciais',()=>{
  for(const url of ['http://player.example/x','javascript:alert(1)','https://localhost/x','https://127.0.0.1/x','https://[::1]/x','https://server.local/x','https://user:pass@player.example/x','https://player.example:8888/x'])assert.equal(safeHttps(url),'');
@@ -25,8 +25,8 @@ test('sessão assinada rejeita adulteração, expiração e troca de senha',asyn
  const old=process.env.ADMIN_PASSWORD;const now=Date.now;process.env.ADMIN_PASSWORD='test-only-password-long-value';
  try{assert.equal(await validPassword('senha incorreta'),false);assert.equal(await validPassword('test-only-password-long-value'),true);const token=await newSession();assert.equal(await verifySession(token),true);assert.equal(await verifySession(token+'x'),false);assert.equal(await verifySession('invalid.'+token.split('.')[1]),false);Date.now=()=>now()+7*3600000;assert.equal(await verifySession(token),false);Date.now=now;process.env.ADMIN_PASSWORD='rotated-test-only-password-value';assert.equal(await verifySession(token),false);}finally{Date.now=now;if(old)process.env.ADMIN_PASSWORD=old;else delete process.env.ADMIN_PASSWORD;}
 });
-test('blog inicial tem 10 artigos completos com endereços únicos',()=>{
- assert.equal(articles.length,10);assert.equal(new Set(articles.map(a=>a.slug)).size,10);for(const a of articles){assert.ok(a.published);assert.ok(a.sections.length>=3);assert.ok(a.sections.flatMap(s=>s.paragraphs).join(' ').split(/\s+/).length>=300);}
+test('blog preserva os 10 artigos legados e adiciona dez artigos completos com URLs únicas',()=>{
+ assert.equal(legacyArticles.length,10);assert.ok(articles.length>=20);assert.equal(new Set(articles.map(a=>a.slug)).size,articles.length);for(const a of legacyArticles)assert.ok(articles.some(p=>p.slug===a.slug));for(const a of articles){assert.ok(a.published);assert.ok(a.sections.length>=3);assert.ok(a.sections.flatMap(s=>s.paragraphs).join(' ').split(/\s+/).length>=300);}
 });
 
 test('fontes diretas escolhem HLS/MP4 e permitem tipo explícito sem alterar embeds originais',async()=>{
