@@ -1,2 +1,3 @@
 import Link from 'next/link';
-export default function NotFound(){return <section className="section empty-state"><span className="micro-label">404 // FORA DO MAPA</span><h1>ROUND NÃO ENCONTRADO.</h1><p>Volte para a base e encontre seu próximo destino.</p><Link className="button primary" href="/">VOLTAR PARA HOME →</Link></section>}
+import { Crosshair, ArrowLeft } from 'lucide-react';
+export default function NotFound(){return <section className="ms-not-found ms-container"><p className="ms-kicker">KILLFEED / 404</p><div className="ms-death-notice"><span>MAPA</span><Crosshair size={17}/><strong>VOCÊ MORREU</strong></div><span className="ms-error-code" aria-hidden="true">404</span><h1 className="ms-title">Fora da rotação.</h1><p className="ms-lead">Esse endereço não está no mapa. Volte ao início e encontre seu próximo round.</p><Link className="ms-button" href="/"><ArrowLeft size={16}/>Voltar para o início</Link></section>}
