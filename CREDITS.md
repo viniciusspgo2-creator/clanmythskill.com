@@ -71,8 +71,11 @@ QGS fornece status por HTTPS; YouTube fornece o vídeo original; TMDB fornece me
 Lighthouse (Google, Apache-2.0) e axe-core (Deque, MPL-2.0) foram executados como ferramentas externas de auditoria no workspace de QA; não foram adicionados às dependências do produto nem ao bundle publicado. Playwright WebKit é um motor de teste, sem equivalência a uma certificação no aplicativo Safari.
 
 Integração de ranking: [Cheerio](https://github.com/cheeriojs/cheerio), MIT, licença e manutenção verificadas na API do GitHub. Uso para interpretação de campos públicos do iceeedR; nenhuma estrutura visual, imagem, CSS ou script da fonte foi copiado para a página do ranking.
+<<<<<<< HEAD
 
 
 ## Imagens editoriais de mapas (atualização 28/10/2026)
 
 As oito imagens em `public/images/maps/` foram substituídas por **ilustrações geradas por IA** para o visual do site, inspiradas nos ambientes clássicos do CS 1.6. Não são screenshots exatos de mapas jogáveis, nem são fontes de callouts oficiais. O texto da seção preserva as informações sobre os mapas.
+=======
+>>>>>>> 038104472d298e622b96be4362e7e17e2893a9a9
