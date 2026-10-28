@@ -27,6 +27,6 @@ export async function getStreaming(force=false,includeHidden=false):Promise<Stre
  }
  const [overrides,provider]=await Promise.all([readValue<Record<string,StreamOverride>>('stream_overrides',{}),providerPromise]);
  const merged=mergeProviderTitles(data.items,provider.items);
- return {...data,streambetter:provider.status,items:merged.map(item=>{const o=overrides[item.id]||{};return {...item,hidden:o.hidden,offline:o.offline,featured:o.featured,embeds:providerSources(item,provider.status.enabled,provider.ids,o)};}).filter(i=>includeHidden||!i.hidden)};
+ return {...data,streambetter:provider.status,items:merged.map(item=>{const o=overrides[item.id]||{};return {...item,title:o.title||item.title,description:o.description??item.description,category:o.category||item.category,image:o.image||item.image,hidden:o.hidden,offline:o.offline,featured:o.featured,embeds:providerSources(item,provider.status.enabled,provider.ids,o)};}).filter(i=>includeHidden||!i.hidden)};
 }
 export async function testTmdb(token:string){const data=await json('https://api.themoviedb.org/3/configuration',token);return !!data.images;}

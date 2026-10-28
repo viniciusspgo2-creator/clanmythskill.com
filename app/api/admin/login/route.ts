@@ -1,9 +1,6 @@
-import {sameOrigin,validPassword,newSession} from '@/lib/admin-auth';
-import {platformMode} from '@/lib/platform';
-import {z} from 'zod';
-const attempts=new Map<string,{time:number;count:number}>();
-export async function POST(req:Request){
- if(platformMode!=='next')return new Response(null,{status:404});if(!sameOrigin(req))return new Response(null,{status:403});
- const ip=req.headers.get('x-forwarded-for')?.split(',')[0]||'local';const old=attempts.get(ip);if(old&&Date.now()-old.time<60000&&old.count>=8)return Response.json({error:'Aguarde um minuto para tentar novamente.'},{status:429});attempts.set(ip,{time:old&&Date.now()-old.time<60000?old.time:Date.now(),count:old&&Date.now()-old.time<60000?old.count+1:1});if(attempts.size>1000){for(const[k,v]of attempts)if(Date.now()-v.time>60000)attempts.delete(k);}
- try{const {password}=z.object({password:z.string().max(500)}).parse(await req.json());if(!await validPassword(password))return Response.json({error:'Senha inválida ou acesso não configurado.'},{status:401});const secure=new URL(req.url).protocol==='https:'?'; Secure':'';return Response.json({ok:true},{headers:{'Set-Cookie':`myth_admin=${await newSession()}; Path=/; Max-Age=21600; HttpOnly; SameSite=Strict${secure}`}});}catch{return Response.json({error:'Não foi possível entrar.'},{status:400});}
-}
+import { sameOrigin, authenticate, newSession } from '@/lib/admin-auth';
+import { platformMode, env } from '@/lib/platform';
+import { rateLimitPersistent, audit } from '@/lib/cms-store';
+import { z } from 'zod';
+const fallback=new Map<string,{start:number;count:number}>();
+export async function POST(req:Request){if(platformMode!=='next')return new Response(null,{status:404});if(!sameOrigin(req))return new Response(null,{status:403});const ip=req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()||'local';let allowed=false;try{if(env.DB)allowed=await rateLimitPersistent('admin-login:'+ip,8,60000);else{const now=Date.now();const old=fallback.get(ip);const current=old&&now-old.start<60000?{...old,count:old.count+1}:{start:now,count:1};fallback.set(ip,current);allowed=current.count<=8;}}catch{return Response.json({error:'Autenticação temporariamente indisponível.'},{status:503});}if(!allowed)return Response.json({error:'Aguarde um minuto antes de tentar novamente.'},{status:429,headers:{'Retry-After':'60'}});try{const{password,email,code}=z.object({password:z.string().min(1).max(72),email:z.string().max(200).default(''),code:z.string().max(6).default('')}).parse(await req.json());const user=await authenticate(email,password,code);if(!user)return Response.json({error:'Credenciais ou código de autenticação inválidos.'},{status:401});const token=await newSession(user,req.headers.get('user-agent')||'');if(env.DB)await audit(user.email,'login','session','Acesso administrativo autorizado.');return Response.json({ok:true},{headers:{'Cache-Control':'no-store','Set-Cookie':`myth_admin=${token}; Path=/; Max-Age=21600; HttpOnly; SameSite=Strict${new URL(req.url).protocol==='https:'?'; Secure':''}`}});}catch{return Response.json({error:'Não foi possível entrar.'},{status:400});}}

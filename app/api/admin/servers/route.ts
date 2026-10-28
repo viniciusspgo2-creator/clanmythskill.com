@@ -1,0 +1,4 @@
+import { hasRole } from '@/lib/admin-auth';
+import { getContent } from '@/lib/cms';
+import { liveStatus } from '@/lib/live-server-status';
+export async function GET(){if(!await hasRole('admin'))return new Response(null,{status:403});const {settings,design}=await getContent(true);const results=await Promise.all(settings.servers.map(async s=>({ip:s.ip,status:await liveStatus(s.ip,design.statusProvider)})));const count=results.filter(s=>s.status&&!s.status.stale).length;return Response.json({supported:count>0,message:count?`${count} servidor(es) consultados por ${design.statusProvider==='qgs'?'HTTPS / QGS':'A2S direto'}. Offline é uma resposta válida; falha da API não significa servidor offline.`:'Status indisponível. A2S direto exige ENABLE_A2S=1 e UDP; QGS exige acesso HTTPS à API. IPs e links Steam continuam funcionando.',results},{headers:{'Cache-Control':'no-store'}});}

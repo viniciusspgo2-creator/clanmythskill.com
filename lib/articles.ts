@@ -10,6 +10,8 @@ export type Article = {
   sections: { heading: string; paragraphs: string[] }[];
   sources?: { label: string; url: string }[];
   published: boolean;
+  archived?: boolean;
+  bodyMarkdown?: string;
   scheduledAt?: string;
   imageAlt?: string;
   tags?: string[];
@@ -243,3 +245,5 @@ export const articles: Article[] = [
     ]
   }
 ];
+
+export function isArticlePublic(a:Article){return a.published&&!a.archived&&(!a.scheduledAt||Date.parse(a.scheduledAt)<=Date.now());}

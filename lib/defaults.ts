@@ -1,4 +1,4 @@
-export type Server = {name:string; label:string; ip:string; description:string; image:string};
+export type Server = {id?:string;active?:boolean;mode?:string;tags?:string[];name:string; label:string; ip:string; description:string; image:string};
 export type Settings = {
  heroLine1:string; heroLine2:string; heroLine3:string; heroDescription:string; aboutTitle:string; aboutStory:string; vipPrice:number; vipDays:number; pixKey:string; pixImage:string; whatsapp:string; instagram:string; drive:string; videoId:string; videoStart:number; heroImage:string; squadImage:string; arsenalImage:string; socialImage:string; seoTitle:string; seoDescription:string; servers:Server[];
 };
@@ -16,7 +16,7 @@ export function money(value:number){return value.toLocaleString('pt-BR',{style:'
 export function waLink(phone:string,text='Fala, MythSkill! Vim pelo site e queria conversar com o clan.'){return `https://wa.me/${phone.replace(/\D/g,'')}?text=${encodeURIComponent(text)}`;}
 
 export function mergeSiteSettings(saved:Partial<Settings>={}):Settings{
- const settings={...defaults,...saved,servers:(saved.servers||defaults.servers).map(server=>({...server}))};
+ const settings={...defaults,...saved,servers:(saved.servers||defaults.servers).map(server=>({active:true,mode:server.name.includes('MIX')?'MIX':'4FUN',tags:[],...server}))};
  if(settings.servers[0]?.image==='/images/dust.webp')settings.servers[0].image='/images/4fun-operator.webp';
  return settings;
 }
