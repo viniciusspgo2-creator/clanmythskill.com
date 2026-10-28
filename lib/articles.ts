@@ -10,6 +10,11 @@ export type Article = {
   sections: { heading: string; paragraphs: string[] }[];
   sources?: { label: string; url: string }[];
   published: boolean;
+  scheduledAt?: string;
+  imageAlt?: string;
+  tags?: string[];
+  seoTitle?: string;
+  seoDescription?: string;
 };
 
 export const articles: Article[] = [
